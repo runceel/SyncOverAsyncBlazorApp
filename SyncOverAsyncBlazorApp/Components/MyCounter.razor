@@ -4,7 +4,8 @@
 
 <p role="status">Current count: @_currentCount</p>
 
-<MyButton Text="Click me" OnClick="IncrementCount" Disabled="_isProcessing" />
+<MyButton Text="Sync" OnClick="IncrementCount" Disabled="_isProcessing" />
+<MyButton Text="Async" OnClick="IncrementCountAsync" Disabled="_isProcessing" />
 
 @code {
     private int _currentCount = 0;
@@ -17,6 +18,17 @@
         _isProcessing = true;
         // 同期処理で DB アクセスする処理のエミュレート
         Thread.Sleep(5000);
+        _currentCount++;
+        _isProcessing = false;
+    }
+
+    private async Task IncrementCountAsync()
+    {
+        if (_isProcessing) return;
+
+        _isProcessing = true;
+        // 非同期処理で DB アクセスする処理のエミュレート
+        await Task.Delay(5000);
         _currentCount++;
         _isProcessing = false;
     }

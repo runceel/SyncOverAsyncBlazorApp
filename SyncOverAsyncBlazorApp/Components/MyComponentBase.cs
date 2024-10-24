@@ -4,15 +4,15 @@ namespace SyncOverAsyncBlazorApp.Components;
 
 public class MyComponentBase : ComponentBase, IHandleEvent
 {
-    Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+    async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
     {
         // イベントハンドラが同期処理である想定なので Task.Run .でラップする
         var task = Task.Run(() => item.InvokeAsync(arg));
-        StateHasChanged();
+        await InvokeAsync(() => StateHasChanged());
 
-        return task.IsCompleted ?
-            Task.CompletedTask :
-            HandleUncompletedEventAsync(task);
+        if (task.IsCompleted) return;
+
+        await HandleUncompletedEventAsync(task);
     }
 
     private async Task HandleUncompletedEventAsync(Task task)
@@ -28,6 +28,6 @@ public class MyComponentBase : ComponentBase, IHandleEvent
             throw;
         }
 
-        StateHasChanged();
+        await InvokeAsync(() => StateHasChanged());
     }
 }
