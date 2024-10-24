@@ -2,7 +2,7 @@
 
 namespace SyncOverAsyncBlazorApp.Components;
 
-public class PageBase : ComponentBase, IHandleEvent
+public class MyComponentBase : ComponentBase, IHandleEvent
 {
     Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
     {
